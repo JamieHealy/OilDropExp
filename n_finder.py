@@ -14,10 +14,10 @@ Look at this after doing the prelab work and supporting reasorces on blackboard
 
 
 #converting csv taken from origin into list of tuples that can be used as e_n and the error
-df = pd.read_csv("CSV.test.csv", skiprows=1)
+df = pd.read_csv("ChargeData.csv")
 
 # Convert two columns into a list of tuples
-tuple_list = list(df.itertuples(index=False, name=None))
+e_n = list(df.itertuples(index=False, name=None))
 #print(tuple_list)  # Output: [(value1, error 1), (value3, error2), ...]
 
 
@@ -36,25 +36,25 @@ def get_ratios(numtor_range, denomtor_range):
     return ratios
 
 # Values used from lab Prelab data 
-e_n_vals = [4.7,3.2,3,6.2,4.8,7.8,3.3,7.7,6,5.9,3.2,7.6,6.3,4.5]
-e_n_errors = [0.3,0.2,0.2,0.3,0.2,0.3,0.2,0.3,0.3,0.3,0.2,0.3,0.3,0.3]
-
-e_n = list(zip(e_n_vals,e_n_errors)) 
+# e_n_vals = [4.7,3.2,3,6.2,4.8,7.8,3.3,7.7,6,5.9,3.2,7.6,6.3,4.5]
+# e_n_errors = [0.3,0.2,0.2,0.3,0.2,0.3,0.2,0.3,0.3,0.3,0.2,0.3,0.3,0.3]
+#
+# e_n = list(zip(e_n_vals,e_n_errors))
 e_n = sorted(e_n)
 
-def uncertainty_in_ratio(a,b, own_uncertainty = 0):
+def uncertainty_in_ratio(a,b, min_uncertainty = 0):
     '''
     Finds the uncertainty in the ratio using error propagation and partial derivatives
     returns error as a float - in lab book it says to use fractional error, but should'nt 
     really make a difference
     '''
-    if (own_uncertainty != 0):
-        return own_uncertainty
-    ratio_unc = np.sqrt(( a[1] / b[0] ) ** 2 + ( ( a[0] * b[1]) / b[0] ** 2 ) ** 2)
+    if (min_uncertainty > b[1]):
+        return np.sqrt((a[1] / b[0]) ** 2 + ((a[0] * min_uncertainty) / b[0] ** 2) ** 2)
     
-    return ratio_unc
+    else:
+        return np.sqrt((a[1] / b[0]) ** 2 + ((a[0] * b[1]) / b[0] ** 2) ** 2)
 
-def relating_ratios(e_n_list, num_range, den_range, own_uncertainty = 0): #need to allow to create own uncertainty
+def relating_ratios(e_n_list, num_range, den_range, min_uncertainty = 0): #need to allow to create own uncertainty
     '''
     inputs: e_n_list is a list of tupes of values and errors for all charges of e_n found;
             num_range is for numerator range in ratios wanted; den range is for denominators;
@@ -75,7 +75,7 @@ def relating_ratios(e_n_list, num_range, den_range, own_uncertainty = 0): #need 
         fit_ratios = []
         for ratio in ratios: #iterating though all ratios
 
-            e_n_rat = (lowest_e_n[0] / e_n_tup[0], uncertainty_in_ratio(lowest_e_n, e_n_tup, own_uncertainty)) #new tuple contating ratio and uncertainty
+            e_n_rat = (lowest_e_n[0] / e_n_tup[0], uncertainty_in_ratio(lowest_e_n, e_n_tup, min_uncertainty)) #new tuple contating ratio and uncertainty
             dec_ratio = ratio[0] / ratio[1] #decimal ratio for set ratios
 
             if (dec_ratio > e_n_rat[0] - e_n_rat[1] and dec_ratio < e_n_rat[0] + e_n_rat[1]): #  not right
@@ -158,9 +158,9 @@ Keep commented in general as it effects finding_e_plot.py
 (this could be rewritted better)
 '''
 
-# plt.bar(list_n, list_of_count)
-# plt.xlabel("Number of Electrons in smallest oil drop")
-# plt.ylabel("Number of times this integer as the numerator is used")
-# plt.show()
-# display(e_m_df)
-# display(stats_df)
+display(e_m_df)
+display(stats_df)
+plt.bar(list_n, list_of_count)
+plt.xlabel("Number of Electrons in smallest oil drop")
+plt.ylabel("Number of times this integer as the numerator is used")
+plt.show()

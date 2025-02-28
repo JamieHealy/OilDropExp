@@ -1,7 +1,8 @@
-from find_n_ratios import e_m_df
+from n_finder import e_m_df
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.optimize import curve_fit
+from IPython.display import display
 '''
 This script reference find_n_ratios, speciffically the dataframe finding expected number of electrons for each oildrop
 This script plots the charge of the oil drop against number of electrons and fits a linear line to get a value of electron charge
@@ -14,10 +15,15 @@ def lin_model (x, a ,b):
 def dir_propor (x, a):
     return x * a
 
-cleaned_df = e_m_df.dropna()
+first_col_df = e_m_df.iloc[:, [0]]
+
+cleaned_df = first_col_df.dropna()
 
 charge_tup = list(cleaned_df.index)
-n = np.array(cleaned_df.iloc[:,0])
+n = np.array(cleaned_df.iloc[:, 0])
+#print(f"Cleaned Df: \n{cleaned_df}")
+display(cleaned_df)
+#print(n)
 charge_val = [i[0] for i in charge_tup]
 charge_err = [i[1] for i in charge_tup]
 
